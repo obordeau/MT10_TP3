@@ -7,6 +7,7 @@
 \usepackage{xcolor}
 \usepackage{tabularx}
 \usepackage{colortbl}
+\usepackage{mathbbol}
 
 \title{Rapport MT10 - TP3 : Corps finis et corps correcteurs}
 \author{Océane Bordeau, Martin Schneider}
@@ -42,8 +43,37 @@
     \maketitle
     \tableofcontents
     \pagebreak
+    \section{Construction de corps finis}
+        \setcounter{subsection}{2}
+        \subsection{Dénombrement des polynômes irréductibles et unitaires de $\mathbb{F}_p[X]$}
+            \subsubsection{Factorisation de $X^q-X$ dans $\mathbb{F}_p[X]$}
+            Question 1
+            \subsubsection{La fonction de Möbius}
+            Question 2
 
-    \section{Préliminaire : \texttt{SageMath} et les nombres entiers}
-    \textbf{Division euclidienne :}
+            1.
+            \lstinputlisting[language=Python, firstline=1, lastline=5]{utils.sage}
+            2.
+            \lstinputlisting[language=Python, firstline=7, lastline=17]{utils.sage}
+            3.
+            \lstinputlisting[language=Python, firstline=19, lastline=25]{utils.sage}
+            \subsubsection{Calcul du nombre de polynômes unitaires irréductibles de degré $d$ dans $\mathbb{F}_p[X]$}
+            Question 3
+            \lstinputlisting[language=Python, firstline=27, lastline=33]{utils.sage}
+            Question 4
+            \lstinputlisting[language=Python, firstline=35, lastline=45]{utils.sage}
+        \subsection{Calcul de polynômes unitaires irréductibles de $\mathbb{F}_p[X]$}
+    \section{Les codes de Reed et Solomon}
+        \subsection{Définition des codes de Reed-Solomon généralisés (GRS)}
+        Question 5
+        \lstinputlisting[language=Python, firstline=48, lastline=65]{utils.sage}
+        \subsection{Cas sans erreur : décodage des GRS par interpolation de Lagrange}
+        \subsection{Simulation d’erreurs de transmission}
+    \section{Correction d’erreurs grâce aux GRS}
+        \subsection{Le polynôme syndrome}
+        \subsection{L’équation clef}
+        \subsection{Résolution de l’équation clef par Euclide}
+        \subsection{Localisation et évaluation des erreurs de transmission}
+    \section{Conclusion : une chaîne de transmission cryptée robuste}
 
 \end{document}
