@@ -8,6 +8,7 @@
 \usepackage{tabularx}
 \usepackage{colortbl}
 \usepackage{mathbbol}
+\usepackage{amssymb}
 
 \title{Rapport MT10 - TP3 : Corps finis et corps correcteurs}
 \author{Océane Bordeau, Martin Schneider}
@@ -43,6 +44,7 @@
     \maketitle
     \tableofcontents
     \pagebreak
+
     \section{Construction de corps finis}
         \setcounter{subsection}{2}
         \subsection{Dénombrement des polynômes irréductibles et unitaires de $\mathbb{F}_p[X]$}
@@ -52,23 +54,83 @@
             Question 2
 
             1.
-            \lstinputlisting[language=Python, firstline=1, lastline=5]{utils.sage}
+            % \lstinputlisting[language=Python, firstline=1, lastline=5]{utils.sage.py}
             2.
-            \lstinputlisting[language=Python, firstline=7, lastline=17]{utils.sage}
+            % \lstinputlisting[language=Python, firstline=7, lastline=17]{utils.sage.py}
             3.
-            \lstinputlisting[language=Python, firstline=19, lastline=25]{utils.sage}
+            % \lstinputlisting[language=Python, firstline=19, lastline=25]{utils.sage.py}
             \subsubsection{Calcul du nombre de polynômes unitaires irréductibles de degré $d$ dans $\mathbb{F}_p[X]$}
             Question 3
-            \lstinputlisting[language=Python, firstline=27, lastline=33]{utils.sage}
+            % \lstinputlisting[language=Python, firstline=27, lastline=33]{utils.sage.py}
             Question 4
-            \lstinputlisting[language=Python, firstline=35, lastline=45]{utils.sage}
+            % \lstinputlisting[language=Python, firstline=35, lastline=45]{utils.sage.py}
         \subsection{Calcul de polynômes unitaires irréductibles de $\mathbb{F}_p[X]$}
+    
     \section{Les codes de Reed et Solomon}
+
         \subsection{Définition des codes de Reed-Solomon généralisés (GRS)}
-        Question 5
-        \lstinputlisting[language=Python, firstline=48, lastline=65]{utils.sage}
+
+        \textbf{Question 5 :}
+        La fonction \texttt{codeGRS} prend en entrée $q$, un bloc de message $x$ de longueur $k$, et les paramètre $v$ et $\alpha$ de longueur $n$.
+        Avec $0 \leqslant k \leqslant n \leqslant q$. La fonction retourne $y = ev_{\alpha,v}(f) = (v_0f(\alpha_0), v_1f(\alpha_1), ..., v_{n-1}f(\alpha_{n-1}))$.
+
+        \lstinputlisting[language=Python, firstline=1, lastline=21]{utils.sage.py}
+
+        \begin{tabularx}{12cm}{|p{0.60cm}|X|}
+            \hline
+            \rowcolor{gray}
+            \texttt{In}
+            & 
+            \texttt{message = [2, 8, 6, 4, 9, 10, 7] \newline
+            V = [25, 41, 44, 27, 10, 24, 37, 21, 3, 13] \newline
+A =         [41, 7, 6, 49, 3, 1, 9, 19, 18, 35] \newline
+            messageEncode = codeGRS(211, message, V, A) \newline
+            messageEncode}
+            \\
+            \hline
+            \texttt{Out}
+            &
+            \texttt{[41, 120, 201, 33, 70, 147, 135, 80, 9, 166]}
+            \\
+            \hline
+        \end{tabularx}
+        \bigbreak
+
         \subsection{Cas sans erreur : décodage des GRS par interpolation de Lagrange}
+        Grâce à l'interpolation de Lagrange qui permet de reconstruire un polynome avec plusieurs valeurs de $x$ et $y$ données. 
+        On peut retrouver le message du départ à partir du message encodé.
+
+        Le polynome est défini par :
+        \[\sum_{i=0}^{n-1}y_il_i(X)\]
+        avec :
+        \[l_i(X) = \prod_{j = 0; j \neq i}^{n - 1}\frac{X-x_j}{x_i-x_j} \]
+
+        Ici on trouve $y_j$ grâce au message encodé, en effet : 
+        \[y_i = f(\alpha_i) = \frac{v_i}{messageEncode[i]}\]
+
+        \lstinputlisting[language=Python, firstline=23, lastline=55]{utils.sage.py}
+
+        \begin{tabularx}{12cm}{|p{0.60cm}|X|}
+            \hline
+            \rowcolor{gray}
+            \texttt{In}
+            & 
+            \texttt{decodeGRS(211, messageEncode, V, A)}
+            \\
+            \hline
+            \texttt{Out}
+            &
+            \texttt{[2, 8, 6, 4, 9, 10, 7]}
+            \\
+            \hline
+        \end{tabularx}
+        \bigbreak
+
+        Si on ne choisit pas les point $\alpha_i$ distincts deux à deux, on risque de diviser par 0 à un moment donné dans le polynôme de Lagrange.
+
         \subsection{Simulation d’erreurs de transmission}
+
+
     \section{Correction d’erreurs grâce aux GRS}
         \subsection{Le polynôme syndrome}
         \subsection{L’équation clef}
