@@ -9,6 +9,8 @@
 \usepackage{colortbl}
 \usepackage{mathbbol}
 \usepackage{amssymb}
+\usepackage{amsfonts}
+
 
 \title{Rapport MT10 - TP3 : Corps finis et corps correcteurs}
 \author{Océane Bordeau, Martin Schneider}
@@ -74,7 +76,7 @@
         La fonction \texttt{codeGRS} prend en entrée $q$, un bloc de message $x$ de longueur $k$, et les paramètre $v$ et $\alpha$ de longueur $n$.
         Avec $0 \leqslant k \leqslant n \leqslant q$. La fonction retourne $y = ev_{\alpha,v}(f) = (v_0f(\alpha_0), v_1f(\alpha_1), ..., v_{n-1}f(\alpha_{n-1}))$.
 
-        \lstinputlisting[language=Python, firstline=1, lastline=21]{utils.sage.py}
+        \lstinputlisting[language=Python, firstline=1, lastline=12]{utils.sage.py}
 
         \begin{tabularx}{12cm}{|p{0.60cm}|X|}
             \hline
@@ -90,13 +92,14 @@ A =         [41, 7, 6, 49, 3, 1, 9, 19, 18, 35] \newline
             \hline
             \texttt{Out}
             &
-            \texttt{[41, 120, 201, 33, 70, 147, 135, 80, 9, 166]}
+            \texttt{[157, 96, 201, 79, 206, 49, 187, 143, 107, 133]}
             \\
             \hline
         \end{tabularx}
         \bigbreak
 
         \subsection{Cas sans erreur : décodage des GRS par interpolation de Lagrange}
+        \textbf{Question 6 :}
         Grâce à l'interpolation de Lagrange qui permet de reconstruire un polynome avec plusieurs valeurs de $x$ et $y$ données. 
         On peut retrouver le message du départ à partir du message encodé.
 
@@ -108,7 +111,7 @@ A =         [41, 7, 6, 49, 3, 1, 9, 19, 18, 35] \newline
         Ici on trouve $y_j$ grâce au message encodé, en effet : 
         \[y_i = f(\alpha_i) = \frac{v_i}{messageEncode[i]}\]
 
-        \lstinputlisting[language=Python, firstline=23, lastline=55]{utils.sage.py}
+        \lstinputlisting[language=Python, firstline=14, lastline=31]{utils.sage.py}
 
         \begin{tabularx}{12cm}{|p{0.60cm}|X|}
             \hline
@@ -129,12 +132,113 @@ A =         [41, 7, 6, 49, 3, 1, 9, 19, 18, 35] \newline
         Si on ne choisit pas les point $\alpha_i$ distincts deux à deux, on risque de diviser par 0 à un moment donné dans le polynôme de Lagrange.
 
         \subsection{Simulation d’erreurs de transmission}
+        \textbf{Question 7 :}
+        Chaque mot codé $y$ est envoyé par un canal de transmission, il se peut que d'éventuelles erreurs font que nous recevons un mot codé $y'$ différent.
+        On cherche à simuler des erreurs de transmission avec la fonction \texttt{errTrans} qui prend en paramètre $y$ le mot codé, et $Nb\_err$ le nombre d'erreurs de transmissions.
+        On tire aléatoirement chaque erreur dans $\mathbb{F}_q^*$. La fonction retourne $y'$ le mot codé avec $Nb\_err$ de transmission.
 
+        \lstinputlisting[language=Python, firstline=33, lastline=40]{utils.sage.py}
+
+        \begin{tabularx}{12cm}{|p{0.60cm}|X|}
+            \hline
+            \rowcolor{gray}
+            \texttt{In}
+            & 
+            \texttt{messageErreur = errTrans(211, messageEncode, 3) \newline
+            messageEncode \newline
+            messageErreur}
+            \\
+            \hline
+            \texttt{Out}
+            &
+            \texttt{[157, 96, 201, 79, 206, 49, 187, 143, 107, 133]\newline
+            [157, 30, 201, 164, 206, 1, 187, 143, 107, 133]}
+            \\
+            \hline
+        \end{tabularx}
+        \bigbreak
+
+        \textbf{Question 8 :}
+        On vérifie que l'interpolation de Lagrange donne n'importe quoi dès qu'il y a une erreur de transmission.
+
+        \begin{tabularx}{12cm}{|p{0.60cm}|X|}
+            \hline
+            \rowcolor{gray}
+            \texttt{In}
+            & 
+            \texttt{decodeGRS(211, messageEncode, V, A)}
+            \\
+            \hline
+            \texttt{Out}
+            &
+            \texttt{[2, 8, 6, 4, 9, 10, 7]}
+            \\
+            \hline
+            \rowcolor{gray}
+            \texttt{In}
+            & 
+            \texttt{decodeGRS(211, messageErreur, V, A)}
+            \\
+            \hline
+            \texttt{Out}
+            &
+            \texttt{[141, 187, 51, 96, 51, 130, 132, 155, 159, 208]}
+            \\
+            \hline
+        \end{tabularx}
+        \bigbreak
 
     \section{Correction d’erreurs grâce aux GRS}
         \subsection{Le polynôme syndrome}
+        \textbf{Question 9 :}
+        On peut calculer le polynôme syndrome avec les paramètres $y'$ le mot reçu, les vecteurs $v$ et $\alpha$, 
+        et les longueurs $n$ (longueur des vecteurs $v$ et $\alpha$) et $k$, la longueur du mot à transmettre au départ. 
+        On définit $r$ par $r = n - k$.
+
+        Le polynome syndrome est définit par : 
+        \[S_{y'}(X) = \sum_{i = 0}^{n - 1}y'_i(v_i^{-1}L_i(\alpha_i)^{-1})(\sum_{j = 0}^{r - 1}(\alpha_iX)^j)\]
+
+        Si $S(X) = 0$, on a donc $y' \in GRS_{n,k}(\alpha,v)$ et on a alors de grandes chances pour que $y'$ ne contienne pas d'erreurs.
+
+        \lstinputlisting[language=Python, firstline=42, lastline=53]{utils.sage.py}
+
+        \textbf{Question 10 :}\bigbreak
+
+        \begin{tabularx}{12cm}{|p{0.60cm}|X|}
+            \hline
+            \rowcolor{gray}
+            \texttt{In}
+            & 
+            \texttt{print(f"S(X) = \{Syndrome(211, len(message), \newline
+            messageEncode, V, A)\}")}
+            \\
+            \hline
+            \texttt{Out}
+            &
+            \texttt{$S(X) = 0$}
+            \\
+            \hline
+            \rowcolor{gray}
+            \texttt{In}
+            & 
+            \texttt{print(f"S(X) = \{Syndrome(211, len(message), \newline
+            messageErreur, V, A)\}")}
+            \\
+            \hline
+            \texttt{Out}
+            &
+            \texttt{$S(X) = 207*X^2 + 109*X + 141$}
+            \\
+            \hline
+        \end{tabularx}
+        \bigbreak
+
+        On a bien $y' \in C \Longleftrightarrow S(X) = 0$.
+
         \subsection{L’équation clef}
         \subsection{Résolution de l’équation clef par Euclide}
+
+        
         \subsection{Localisation et évaluation des erreurs de transmission}
     \section{Conclusion : une chaîne de transmission cryptée robuste}
 

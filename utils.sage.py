@@ -1,13 +1,4 @@
 def codeGRS(q, message, V, A):
-	if len(V) != len(alphas):
-		print("Les listes v et alpha doivent avoir la meme longueur.")
-		return
-	if not Integer(q).is_prime_power():
-		print("L'ordre d'un corps fini doit etre une puissance premiere.")
-		return
-	if not Integer(q).is_prime():
-		print("L'ordre q du corps fini doit etre premier.")
-		return
 	code = []
 	FqX.<X> = GF(q)['X']
 	f = FqX.zero()
@@ -21,12 +12,6 @@ def codeGRS(q, message, V, A):
 	return code
 
 def polynomeLagrange(q, A, i):
-	if not Integer(q).is_prime_power():
-		print("L'ordre d'un corps fini doit être une puissance première.")
-		return
-	if not Integer(q).is_prime():
-		print("L'ordre q du corps fini doit être premier.")
-		return
 	FqX.<X> = GF(q)['X'] 
 	polynome = FqX.one()
 	for j in range(len(A)):
@@ -35,15 +20,6 @@ def polynomeLagrange(q, A, i):
 	return polynome
 
 def decodeGRS(q, code, V, A):
-	if len(V) != len(alphas):
-		print("Les listes v et alpha doivent avoir la même longueur.")
-		return
-	if not Integer(q).is_prime_power():
-		print("L'ordre d'un corps fini doit être une puissance première.")
-		return
-	if not Integer(q).is_prime():
-		print("L'ordre q du corps fini doit être premier.")
-		return
 	message = []
 	FqX.<X>=GF(q)['X']
 	polynome = FqX.zero()
@@ -62,3 +38,16 @@ def errTrans(q, y, Nb_err):
 		nombresPossibles.remove(yprime[i])
 		yprime[i] = random.choice(nombresPossibles)
 	return yprime
+
+def Syndrome(q, k, code, V, A):
+	FqX.<X> = GF(q)['X']
+	n = len(V)
+	r = n-k
+	result = FqX.zero()
+	for i in range(n):
+		sum = FqX.one()
+		for j in range(1, r):
+			sum += pow(FqX(A[i]) * X,j)
+		polynome = polynomeLagrange(q, A, i)
+		result += FqX(code[i]) * (pow(FqX(V[i]),-1) * pow(polynome(FqX(A[i])),-1)) * sum 
+	return result
