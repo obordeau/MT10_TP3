@@ -51,3 +51,29 @@ def Syndrome(q, k, code, V, A):
 		polynome = polynomeLagrange(q, A, i)
 		result += FqX(code[i]) * (pow(FqX(V[i]),-1) * pow(polynome(FqX(A[i])),-1)) * sum 
 	return result
+
+def Clef(q, synd, k, n):
+	FqX.<X> = GF(q)['X']
+	r = n - k
+	rJ_1 = X^r
+	rJ = synd
+	uJ_1 = FqX.one()
+	uJ = FqX.zero()
+	vJ_1 = FqX.zero()
+	vJ = FqX.one()
+	tmp = 0
+	qJ = 0
+	while(FqX(rJ).degree() >= r/2):
+		qJ = FqX(rJ_1) // FqX(rJ) 
+		tmp = rJ
+		rJ = FqX(rJ_1) % FqX(rJ) 
+		rJ_1 = tmp
+		tmp = uJ
+		uJ = uJ_1 - uJ * qJ
+		uJ_1 = tmp
+		tmp = vJ
+		vJ = vJ_1 - vJ * qJ
+		vJ_1 = tmp
+	sigma = pow(vJ(0),-1) * vJ
+	omega = pow(vJ(0),-1) * rJ
+	return sigma, omega

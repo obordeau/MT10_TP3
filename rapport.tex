@@ -152,7 +152,7 @@ A =         [41, 7, 6, 49, 3, 1, 9, 19, 18, 35] \newline
             \texttt{Out}
             &
             \texttt{[157, 96, 201, 79, 206, 49, 187, 143, 107, 133]\newline
-            [157, 30, 201, 164, 206, 1, 187, 143, 107, 133]}
+            [157, 86, 49, 79, 206, 49, 187, 32, 107, 133]}
             \\
             \hline
         \end{tabularx}
@@ -182,7 +182,7 @@ A =         [41, 7, 6, 49, 3, 1, 9, 19, 18, 35] \newline
             \hline
             \texttt{Out}
             &
-            \texttt{[141, 187, 51, 96, 51, 130, 132, 155, 159, 208]}
+            \texttt{[18, 112, 184, 168, 33, 76, 147, 9, 119, 24]}
             \\
             \hline
         \end{tabularx}
@@ -227,7 +227,7 @@ A =         [41, 7, 6, 49, 3, 1, 9, 19, 18, 35] \newline
             \hline
             \texttt{Out}
             &
-            \texttt{$S(X) = 207*X^2 + 109*X + 141$}
+            \texttt{$S(X) = 67*X^2 + 120*X + 18$}
             \\
             \hline
         \end{tabularx}
@@ -236,9 +236,54 @@ A =         [41, 7, 6, 49, 3, 1, 9, 19, 18, 35] \newline
         On a bien $y' \in C \Longleftrightarrow S(X) = 0$.
 
         \subsection{L’équation clef}
-        \subsection{Résolution de l’équation clef par Euclide}
+        L'équation clef est la suivante : 
+        \[\sigma(X)S(X) = \omega(X) [X^r]\]
+        avec le polynôme localisateur des erreurs $\sigma(X)$ et le polynôme évaluateur des erreurs $\omega(X)$.
 
+        \subsection{Résolution de l’équation clef par Euclide}
         
+        \textbf{Question 11 :}
+        Grâce à l'algorithme d'Euclide on peut trouver $\sigma$ et $\omega$, la fonction \texttt{Clef} 
+        calcule à partir du polynôme syndrome $S(X)$, de $q$, $k$ et $n$, les polynômes $\sigma$ et $\omega$.
+
+        \lstinputlisting[language=Python, firstline=55, lastline=79]{utils.sage.py}
+        
+        Avec l'exemple développé jusqu'ici on vérifie que l'équation clef est satisfaite.
+
+        \begin{tabularx}{12cm}{|p{0.60cm}|X|}
+            \hline
+            \rowcolor{gray}
+            \texttt{In}
+            & 
+            \texttt{syndromeErreur = Syndrome(211, len(message), \newline
+            messageErreur, V, A) \newline
+            sigma, omega = clef(211, syndromeErreur, len(message), len(V)) \newline
+            print(f"sigma = \{sigma\}") \newline
+            print(f"omega = \{omega\}")}
+            \\
+            \hline
+            \texttt{Out}
+            &
+            \texttt{sigma = 170*X + 1 \newline
+            omega = 15*X + 18}
+            \\
+            \hline
+            \rowcolor{gray}
+            \texttt{In}
+            & 
+            \texttt{FqX.<X> = GF(211)['X'] \newline
+            r = len(V) - len(message) \newline
+            print(f"\{(sigma * FqX(syndromeErreur)) \% X**r\} = \{omega \% X**r\} ?")}
+            \\
+            \hline
+            \texttt{Out}
+            &
+            \texttt{15*X + 18 = 15*X + 18 ?}
+            \\
+            \hline
+        \end{tabularx}
+        \bigbreak
+
         \subsection{Localisation et évaluation des erreurs de transmission}
     \section{Conclusion : une chaîne de transmission cryptée robuste}
 
