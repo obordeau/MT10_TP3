@@ -73,26 +73,56 @@
         \subsection{Définition des codes de Reed-Solomon généralisés (GRS)}
 
         \textbf{Question 5 :}
-        La fonction \texttt{codeGRS} prend en entrée $q$, un bloc de message $x$ de longueur $k$, et les paramètre $v$ et $\alpha$ de longueur $n$.
-        Avec $0 \leqslant k \leqslant n \leqslant q$. La fonction retourne $y = ev_{\alpha,v}(f) = (v_0f(\alpha_0), v_1f(\alpha_1), ..., v_{n-1}f(\alpha_{n-1}))$.
+        La fonction \texttt{codeGRS} prend en entrée un bloc d'entiers $message$ de longueur $k$, et les paramètres $v$ et $\alpha$ de longueur $n$.
+        On associera chaque entier de $message$ avec un élément dans $\mathbb{F}_q$. Les entiers doivent donc être inférieurs à $q$.
+        Par définition, on a $0 \leqslant k \leqslant n \leqslant q$. La fonction retourne $y = ev_{\alpha,v}(f) = (v_0f(\alpha_0), v_1f(\alpha_1), ..., v_{n-1}f(\alpha_{n-1}))$.
 
-        \lstinputlisting[language=Python, firstline=1, lastline=12]{utils.sage.py}
+        Les paramètres $v$ et $\alpha$ sont des listes d'éléments tirés au hasard dans $\mathbb{F}_q$.
+
+        \lstinputlisting[language=Python, firstline=1, lastline=8]{utils.sage.py}
 
         \begin{tabularx}{12cm}{|p{0.60cm}|X|}
             \hline
             \rowcolor{gray}
             \texttt{In}
             & 
-            \texttt{message = [2, 8, 6, 4, 9, 10, 7] \newline
-            V = [25, 41, 44, 27, 10, 24, 37, 21, 3, 13] \newline
-A =         [41, 7, 6, 49, 3, 1, 9, 19, 18, 35] \newline
-            messageEncode = codeGRS(211, message, V, A) \newline
-            messageEncode}
+            \texttt{q = 2**8\newline
+            Fq = GF(q, name='a')\newline
+            R.<X> = Fq['X']\newline
+            C = Fq.list()\newline
+            n, k = 8, 3\newline
+            \newline
+            x = [254, 20, 11]\newline
+            \newline
+            V = []\newline
+            for i in range(n):\newline
+            V.append(C[randint(1, len(C)-1)])\newline
+            \newline
+            A = []\newline
+            for i in range(n): \newline
+            \_\_ c = C[randint(1, len(C)-1)]\newline
+            \_\_ while c in A:
+            c = C[randint(1, len(C)-1)]\newline
+            a.append(c)}
+            \\
+            \hline
+            \rowcolor{gray}
+            \texttt{In}
+            & 
+            \texttt{y = codeGRS(x, V, A)\newline
+            y}
             \\
             \hline
             \texttt{Out}
             &
-            \texttt{[157, 96, 201, 79, 206, 49, 187, 143, 107, 133]}
+            \texttt{$[a^7 + a^5 + a^4 + a^3 + 1, \newline
+            a^5 + a^4 + a^3 + a^2 + 1,\newline
+            a^6 + a^3 + a^2,\newline
+            a^7 + a^6 + a^2 + a + 1,\newline
+            a^6 + a^5 + a^3 + a^2,\newline
+            a^3 + a^2 + a + 1,\newline
+            a^6 + a^5 + a^2 + a,\newline
+            a^5 + a^2]$}
             \\
             \hline
         \end{tabularx}
