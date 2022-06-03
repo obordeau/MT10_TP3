@@ -1,5 +1,6 @@
 \documentclass[titlepage]{article}
 \usepackage[utf8]{inputenc}
+\usepackage[francais]{babel}
 \usepackage[T1]{fontenc}
 \usepackage{graphicx}
 \usepackage{caption} 
@@ -10,6 +11,7 @@
 \usepackage{mathbbol}
 \usepackage{amssymb}
 \usepackage{amsfonts}
+\usepackage{amsmath}
 
 
 \title{Rapport MT10 - TP3 : Corps finis et corps correcteurs}
@@ -51,26 +53,152 @@
         \setcounter{subsection}{2}
         \subsection{Dénombrement des polynômes irréductibles et unitaires de $\mathbb{F}_p[X]$}
             \subsubsection{Factorisation de $X^q-X$ dans $\mathbb{F}_p[X]$}
-            Question 1
-            \subsubsection{La fonction de Möbius}
-            Question 2
+            \textbf{Question 1 :}
 
-            1.
-            % \lstinputlisting[language=Python, firstline=1, lastline=5]{utils.sage.py}
-            2.
-            % \lstinputlisting[language=Python, firstline=7, lastline=17]{utils.sage.py}
-            3.
-            % \lstinputlisting[language=Python, firstline=19, lastline=25]{utils.sage.py}
+            L'objetcif est de vérifier la factorisation du pôlynome $X^q-X$ avec $q=2^6$.
+
+            Pour cela, nous allons déterminer l'ensemble des pôlynomes unitaires et irréductibales de degré $d$ tels que $d|n$, puis effectuer leur produit.
+
+            \lstinputlisting[language=Python, firstline=101, lastline=109]{utils.sage.py}
+
+            \begin{tabularx}{12cm}{|p{0.60cm}|X|}
+                \hline
+                \rowcolor{gray}
+                \texttt{In}
+                & 
+                \texttt{prod == R(x ** (p ** n) - x)}
+                \\
+                \hline
+                \texttt{Out}
+                &
+                \texttt{True}
+                \\
+                \hline
+            \end{tabularx}
+            \bigbreak
+
+            On peut donc affirmer :
+
+            \[ X^q-X=\prod_{\substack{P \in \mathbb{F}_p[X] \\ irr\acute{e}ductible \: et \: unitaire  \\ deg(P)|n}} P(X) \]
+
+            \subsubsection{La fonction de Möbius}
+            \textbf{Question 2 :}
+
+            \lstinputlisting[language=Python, firstline=55, lastline=59]{utils.sage.py}
+
+            \begin{tabularx}{12cm}{|p{0.60cm}|X|}
+                \hline
+                \rowcolor{gray}
+                \texttt{In}
+                & 
+                \texttt{test1(100)}
+                \\
+                \hline
+                \texttt{Out}
+                &
+                \texttt{True}
+                \\
+                \hline
+            \end{tabularx}
+            \bigbreak
+
+            On vérifie donc que $\mu (n) \in \{-1;0;1\}$ pour les 100 premiers entiers naturels.
+
+            \lstinputlisting[language=Python, firstline=61, lastline=68]{utils.sage.py}
+
+            \begin{tabularx}{12cm}{|p{0.60cm}|X|}
+                \hline
+                \rowcolor{gray}
+                \texttt{In}
+                & 
+                \texttt{test2(100)}
+                \\
+                \hline
+                \texttt{Out}
+                &
+                \texttt{True}
+                \\
+                \hline
+            \end{tabularx}
+            \bigbreak
+
+            La formule d'Euler est vérifiée pour les 100 premiers entiers naturels.
+
+            \lstinputlisting[language=Python, firstline=70, lastline=74]{utils.sage.py}
+
+            \begin{tabularx}{12cm}{|p{0.60cm}|X|}
+                \hline
+                \rowcolor{gray}
+                \texttt{In}
+                & 
+                \texttt{phiMobius(100)}
+                \\
+                \hline
+                \texttt{Out}
+                &
+                \texttt{40}
+                \\
+                \hline
+            \end{tabularx}
+            \bigbreak
+
+            \begin{tabularx}{12cm}{|p{0.60cm}|X|}
+                \hline
+                \rowcolor{gray}
+                \texttt{In}
+                & 
+                \texttt{euler\_phi(100)}
+                \\
+                \hline
+                \texttt{Out}
+                &
+                \texttt{40}
+                \\
+                \hline
+            \end{tabularx}
+            \bigbreak
+
+            Le calcul de $\phi (100)$ grâce à la formule d'inversion de Möbius donne bien le bon résultat : $40$.
+
             \subsubsection{Calcul du nombre de polynômes unitaires irréductibles de degré $d$ dans $\mathbb{F}_p[X]$}
-            Question 3
-            % \lstinputlisting[language=Python, firstline=27, lastline=33]{utils.sage.py}
-            Question 4
-            % \lstinputlisting[language=Python, firstline=35, lastline=45]{utils.sage.py}
+            \textbf{Question 3 :}
+            \lstinputlisting[language=Python, firstline=76, lastline=80]{utils.sage.py}
+            Grâce à ctte fonction, dressons un tableau de $Irr_p(n)$ pour $p = 2, 3, 5$ et $n = 1, . . . , 10$.
+
+            \begin{tabular}{|c|c c c c c c c c c c|}
+                \hline
+                & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 \\
+                \hline
+                2 & 2 & 1 & 2 & 3 & 6 & 9 & 18 & 30 & 56 & 99 \\
+                3 & 3 & 3 & 8 & 18 & 48 & 116 & 312 & 810 & 2184 & 5880 \\
+                5 & 5 & 10 & 40 & 150 & 624 & 2580 & 11160 &  48750 & 217000 & 976248 \\ 
+                \hline
+            \end{tabular}
+            \bigbreak
+
+            \textbf{Question 4 :}
+            \lstinputlisting[language=Python, firstline=82, lastline=99]{utils.sage.py}
+
+            \begin{tabularx}{12cm}{|p{0.60cm}|X|}
+                \hline
+                \rowcolor{gray}
+                \texttt{In}
+                & 
+                \texttt{polynomes10()}
+                \\
+                \hline
+                \texttt{Out}
+                &
+                \texttt{226}
+                \\
+                \hline
+            \end{tabularx}
+            \bigbreak
+
         \subsection{Calcul de polynômes unitaires irréductibles de $\mathbb{F}_p[X]$}
     
     \section{Les codes de Reed et Solomon}
-
-        \subsection{Définition des codes de Reed-Solomon généralisés (GRS)}
+        \subsection{Définition des codes de Reed-Solomon \\ généralisés (GRS)}
 
         \textbf{Question 5 :}
         La fonction \texttt{codeGRS} prend en entrée $q$, un bloc de message $x$ de longueur $k$, et les paramètre $v$ et $\alpha$ de longueur $n$.
