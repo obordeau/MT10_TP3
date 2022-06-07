@@ -51,12 +51,11 @@
 
     \section{Construction de corps finis}
         \setcounter{subsection}{2}
-        \subsection{Dénombrement des polynômes irréductibles et unitaires \newline 
-        de $\mathbb{F}_p[X]$}
+        \subsection{Dénombrement des polynômes irréductibles et unitaires de $\mathbb{F}_p[X]$}
             \subsubsection{Factorisation de $X^q-X$ dans $\mathbb{F}_p[X]$}
             \textbf{Question 1 :}
 
-            L'objetcif est de vérifier la factorisation du pôlynome $X^q-X$ avec $q=2^6$.
+            L'objectif est de vérifier la factorisation du pôlynome $X^q-X$ avec $q=2^6$.
 
             Pour cela, nous allons déterminer l'ensemble des pôlynomes unitaires et 
             irréductibles de degré $d$ tels que $d|n$, puis effectuer leur produit.
@@ -86,6 +85,8 @@
             \subsubsection{La fonction de Möbius}
             \textbf{Question 2 :}
 
+            Il existe dans Sage une fonction \texttt{moebius} qui calcule les $\mu(n)$ .On cherche ici à vérifier que l'image de cette fonction est comprise entre $-1$ et $1$.
+
             \lstinputlisting[language=Python, firstline=89, lastline=93]{utils.sage.py}
 
             \begin{tabularx}{12cm}{|p{0.60cm}|X|}
@@ -105,9 +106,12 @@
             \bigbreak
 
             On vérifie donc que $\mu (n) \in \{-1;0;1\}$ pour les 100 premiers entiers naturels.
+            \bigbreak
+
+            Il s'agit maintenant de vérifier la formule d'Euler pour reproduire la fonction de Möbius.
 
             \lstinputlisting[language=Python, firstline=95, lastline=99]{utils.sage.py}
-
+            
             \begin{tabularx}{12cm}{|p{0.60cm}|X|}
                 \hline
                 \rowcolor{gray}
@@ -123,8 +127,11 @@
                 \hline
             \end{tabularx}
             \bigbreak
-
+            
             La formule d'Euler est vérifiée pour les 100 premiers entiers naturels.
+            \bigbreak
+            
+            Grace à la formule d'inversion de Möbius, on peut définir une nouvelle formule pour calculer l'indicatrice d'Euler : 
 
             \lstinputlisting[language=Python, firstline=101, lastline=105]{utils.sage.py}
 
@@ -164,8 +171,12 @@
 
             \subsubsection{Calcul du nombre de polynômes unitaires irréductibles de degré $d$ dans $\mathbb{F}_p[X]$}
             \textbf{Question 3 :}
+
+            On cherche à dénombrer les polynômes unitaires et irréductibles de degré $d$.
+
             \lstinputlisting[language=Python, firstline=126, lastline=130]{utils.sage.py}
             Grâce à cette fonction, dressons un tableau de $Irr_p(n)$ pour $p = 2, 3, 5$ et $n = 1, . . . , 10$.
+            \bigbreak
 
             \begin{tabular}{|c|c c c c c c c c c c|}
                 \hline
@@ -181,6 +192,17 @@
             \subsection{Calcul de polynômes unitaires irréductibles de $\mathbb{F}_p[X]$}
 
             \textbf{Question 4 :}
+
+            On cherche à déterminer tous les polynômes unitaires et irréductibles de $\mathbb{F}_2[X]$ de degré inférieur ou égal à 10.\newline
+            
+            On sait qu'il en existe 226 grâce à la question précédente, en effet $2 + 1 + 2 + 3 + 6 + 9 + 18 + 30 + 56 + 99 = 226$. \newline
+
+            Pour le faire manuellement, on transforme tous les nombres n de 2 à 2048 en binaire, ainsi sur 10 bits,
+            nous aurons toutes les combinaisons possibles de 0 et 1. Ces bits correspondront aux coefficients des polynômes. \newline
+            
+            Pour chacun de ces polynômes créés, on vérifie s'ils sont irréductibles, s'ils le sont, on incrémente le compteur. \newline
+            On affiche ainsi le nombre de polynômes unitaires et irréductibles de $\mathbb{F}_2[X]$ de degré inférieur ou égal à 10. \newline
+
             \lstinputlisting[language=Python, firstline=107, lastline=124]{utils.sage.py}
 
             \begin{tabularx}{12cm}{|p{0.60cm}|X|}
@@ -188,7 +210,7 @@
                 \rowcolor{gray}
                 \texttt{In}
                 & 
-                \texttt{polynomes10()}
+                \texttt{polynômes10()}
                 \\
                 \hline
                 \texttt{Out}
@@ -200,7 +222,6 @@
             \bigbreak
 
             On trouve bien 226 polynômes irréductibles de $\mathbb{F}_2[X]$ de degré inférieur ou égal à 10 grâce à cette fonction.
-            Ce qui correspond bien à $2 + 1 + 2 + 3 + 6 + 9 + 18 + 30 + 56 + 99 = 226$.
 
             Il existe aussi une fonction \texttt{Sage} que nous allons utiliser pour vérifier de nouveau la fonction précédente.
 
@@ -220,6 +241,7 @@
         \subsection{Définition des codes de Reed-Solomon \\ généralisés (GRS)}
 
         \textbf{Question 5 :}
+
         La fonction \texttt{codeGRS} prend en entrée un bloc d'entiers $message$ de longueur $k$, et les paramètres $v$ et $\alpha$ de longueur $n$.
         On associera chaque entier de $message$ avec un élément dans $\mathbb{F}_q$. Les entiers doivent donc être inférieurs à $q$.
         Par définition, on a $0 \leqslant k \leqslant n \leqslant q$. La fonction retourne $y = ev_{\alpha,v}(f) = (v_0f(\alpha_0), v_1f(\alpha_1), ..., v_{n-1}f(\alpha_{n-1}))$.
@@ -253,6 +275,11 @@
             a.append(c)}
             \\
             \hline
+            \end{tabularx}
+            \bigbreak
+
+            \begin{tabularx}{12cm}{|p{0.60cm}|X|}
+            \hline
             \rowcolor{gray}
             \texttt{In}
             & 
@@ -277,10 +304,11 @@
 
         \subsection{Cas sans erreur : décodage des GRS par interpolation de Lagrange}
         \textbf{Question 6 :}
-        Grâce à l'interpolation de Lagrange qui permet de reconstruire un polynome avec plusieurs valeurs de $x$ et $y$ données. 
-        On peut retrouver le message du départ à partir du message encodé.
 
-        Le polynome est défini par :
+        Grâce à l'interpolation de Lagrange qui permet de reconstruire un polynôme avec plusieurs valeurs de $x$ et $y$ données. 
+        On peut retrouver le message de départ à partir du message encodé.
+
+        Le polynôme est défini par :
         \[\sum_{i=0}^{n-1}y_il_i(X)\]
         avec :
         \[l_i(X) = \prod_{j = 0; j \neq i}^{n - 1}\frac{X-x_j}{x_i-x_j} \]
@@ -310,8 +338,9 @@
 
         \subsection{Simulation d’erreurs de transmission}
         \textbf{Question 7 :}
+
         Chaque mot codé $y$ est envoyé par un canal de transmission, il se peut que d'éventuelles erreurs font que nous recevons un mot codé $y'$ différent.
-        On cherche à simuler des erreurs de transmission avec la fonction \texttt{errTrans} qui prend en paramètre $y$ le mot codé, et $Nb\_err$ le nombre d'erreurs de transmissions.
+        On cherche à simuler des erreurs de transmission avec la fonction \texttt{errTrans} qui prend en paramètre $y$ le mot codé, et $Nb\_err$ le nombre d'erreurs de transmissions à simuler.
         On tire aléatoirement chaque erreur dans $\mathbb{F}_q^*$. La fonction retourne $y'$ le mot codé avec $Nb\_err$ de transmission.
 
         \lstinputlisting[language=Python, firstline=38, lastline=44]{utils.sage.py}
@@ -350,7 +379,9 @@
         \bigbreak
 
         \textbf{Question 8 :}
+
         On vérifie que l'interpolation de Lagrange donne n'importe quoi dès qu'il y a une erreur de transmission.
+        \bigbreak
 
         \begin{tabularx}{12cm}{|p{0.60cm}|X|}
             \hline
@@ -382,17 +413,22 @@
     \section{Correction d’erreurs grâce aux GRS}
         \subsection{Le polynôme syndrome}
         \textbf{Question 9 :}
+
         On peut calculer le polynôme syndrome avec les paramètres $y'$ le mot reçu, les vecteurs $v$ et $\alpha$.
         On définit $r$ par $r = n - k$.
 
-        Le polynome syndrome est définit par : 
+        Le polynôme syndrome est définit par : 
         \[S_{y'}(X) = \sum_{i = 0}^{n - 1}y'_i(v_i^{-1}L_i(\alpha_i)^{-1})(\sum_{j = 0}^{r - 1}(\alpha_iX)^j)\]
 
         Si $S(X) = 0$, on a donc $y' \in GRS_{n,k}(\alpha,v)$ et on a alors de grandes chances pour que $y'$ ne contienne pas d'erreurs.
 
         \lstinputlisting[language=Python, firstline=46, lastline=51]{utils.sage.py}
 
-        \textbf{Question 10 :}\bigbreak
+        \textbf{Question 10 :}
+
+        On vérifie que le polynôme syndrome renvoie bien $0$ pour le mot codé $y$ sans erreur et renvoie une autre valeur pour le mot codé $y'$ avec erreur.
+        
+        \bigbreak
 
         \begin{tabularx}{12cm}{|p{0.60cm}|X|}
             \hline
@@ -431,13 +467,14 @@
         \subsection{Résolution de l’équation clef par Euclide}
         
         \textbf{Question 11 :}
+
         Grâce à l'algorithme d'Euclide on peut trouver $\sigma$ et $\omega$, la fonction \texttt{Clef} 
         calcule à partir du polynôme syndrome $S(X)$, de $q$, $k$ et $n$, les polynômes $\sigma$ et $\omega$.
 
         \lstinputlisting[language=Python, firstline=53, lastline=67]{utils.sage.py}
         
         Avec l'exemple développé jusqu'ici on vérifie que l'équation clef est satisfaite.
-
+        \bigbreak
         \begin{tabularx}{12cm}{|p{0.60cm}|X|}
             \hline
             \rowcolor{gray}
@@ -472,7 +509,8 @@
 
         \subsection{Localisation et évaluation des erreurs de transmission}
         \textbf{Question 12 :}
-        La fonction \texttt{Erreur} à partir des polynômes localisateur et évaluateur $\sigma$ et $\omega$, et des vecteurs $v$ et $\alpha$,
+
+        La fonction \texttt{Erreur}, à partir des polynômes localisateur et évaluateur $\sigma$ et $\omega$, et des vecteurs $v$ et $\alpha$,
         retourne un tableau $e$ correspondant à l'erreur de transmission.
 
         On peut calculer $e_b$ de la façon suivante : 
@@ -501,14 +539,14 @@
         \bigbreak
 
     \section{Conclusion : une chaîne de transmission cryptée robuste}
-    L'objectif de cette section est de simuler un chaîne de transmission qui allie le l'algorithme RSA pour l'encryption et le code GRS pour l'intégrité des données.
+    L'objectif de cette section est de simuler un chaîne de transmission qui allie l'algorithme RSA pour l'encryption et le code GRS pour l'intégrité des données.
     Le message doit d'abord être numérisé sous forme d'une liste d'entiers grâce à la fonction \texttt{numerise}.
     
     Dans un soucis de simplification, on utilisera une clé RSA de 8 bits pour obtenir une liste d'entiers compris entre 0 et 255. Cela facilitera l'utilisation d'un corps fini à $2^8$ éléments.
     Les fonctions d'encryption et de décryption RSA utilisées, ainsi que les fonctions de numérisation et d'alphabétisation proviennent du précédent TP.
     
     Pour obtenir des mots de k lettres, on utilisera la fonction \texttt{split} qui divise la chaine d'entiers en une liste de sous-listes contenant k éléments. 
-    Chaque mot de cette dernière liste pourra donc être ensuite codée grâce à la fonction \texttt{codeGRS}.
+    Chaque mot de cette dernière liste pourra donc être ensuite codé grâce à la fonction \texttt{codeGRS}.
     La fonction \texttt{split}, incrémente chaque entier pour ne pas se retrouver avec des zéros.
 
     \lstinputlisting[language=Python, firstline=132, lastline=141]{utils.sage.py}
@@ -570,7 +608,7 @@
     
     \subsection{Cas avec erreur}
 
-        Le processus est le même, on simule seulement l'apparition d'erreurs lors de la transmission du message, nos fonctions permettent de détecter jusqu'à 2 erreurs, 
+        Le processus est le même, on simule seulement l'apparition d'erreurs lors de la transmission du message, nos fonctions permettent de détecter jusqu'à 2 erreurs pour les parametres choisis, 
         on simule donc des erreurs aléatoires sur chaque mots.
         \bigbreak
     
