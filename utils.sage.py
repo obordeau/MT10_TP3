@@ -42,3 +42,109 @@ def errTrans(y, nb_Err):
         e = C[randint(1, len(C)-1)] 
         y_prime[i] += e
     return y_prime
+
+def Syndrome(y_prime, A, V):
+    S = R.zero()
+    for i in range(n):
+        L = Li(i, A)
+        S += y_prime[i]/(V[i] * L(A[i])) * sum([(A[i] * X)**j for j in range(r)])
+    return S
+
+def Clef(S):
+    rr = [X**r, S]
+    u = [R.one(), R.zero()]
+    v = [R.zero(), R.one()]
+    q = [R.zero()]
+    j = 1
+    while rr[j].degree() >= r/2:
+        q.append(rr[j-1] // rr[j])
+        rr.append(rr[j-1] % rr[j])
+        u.append(u[j-1] - u[j]*q[j])
+        v.append(v[j-1] - v[j]*q[j])
+        j += 1
+    sigma = v[j]
+    omega = rr[j]
+    return sigma/sigma(0), omega/sigma(0)
+
+def Erreur(sigma, omega, A, V):
+    e = [0]*n
+    B = [sigma(1/A[b]) == 0 for b in range(n)]
+
+    for b, i in enumerate(B):
+        if i == True:
+            L = Li(b, A)
+            e[b] = -A[b] * omega(1/A[b]) * V[b] * L(A[b]) * 1/sigma.derivative()(1/A[b])
+    return e
+
+p = 2
+n = 6
+F2 = GF(p)
+R = F2.polynomial_ring()
+produit = R.one()
+for d in divisors(n):
+  for poly in R.polynomials(of_degree = d):
+    if poly.is_irreducible() and poly.is_monic():
+      produit *= poly
+
+def test1(n):
+    for i in range(1, n + 1):
+        if moebius(i) not in [-1, 0, 1]:
+            return False
+    return True
+
+def test2(n):
+    for i in range(2, n + 1):
+        if sum(map(moebius, divisors(i))) != 0:
+            return False
+    return True
+
+def phiMobius(n):
+    p = 0
+    for d in divisors(n):
+        p += moebius(n /d ) * d
+    return p
+
+def polynomes10():
+    number = 0
+    poly = []
+    if X.is_irreducible() : 
+        poly.append(X)
+        number += 1
+    for n in range (2,2048):
+        P = 0
+        i = 0
+        for c in (bin(n)[2:]):
+            k = int(c)
+            P += (X^i)*k
+            i += 1
+        if not(P in poly) :
+            if P.is_irreducible() :
+                poly.append(P)
+                number += 1
+    print(number)
+
+def irr(p, n):
+    res = 0
+    for d in divisors(n):
+        res += moebius(n / d) * pow(p, d)
+    return res / n
+
+def split(message, k):
+    result = []
+    while (len(message) % k != 0):
+        message.append(0)
+    for i in range(0, len(message), k):
+        new_element = []
+        for j in range(k):
+            new_element.append(message[i + j])
+        result.append(new_element)
+    return result
+
+def gather(list):
+    result = []
+    for sublist in list:
+        for element in sublist:
+            result.append(element - 1)
+    while (result[-1] == 0):
+        result = result[:-1]
+    return result
