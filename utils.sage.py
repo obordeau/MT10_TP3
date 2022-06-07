@@ -136,7 +136,7 @@ def split(message, k):
     for i in range(0, len(message), k):
         new_element = []
         for j in range(k):
-            new_element.append(message[i + j])
+            new_element.append(message[i + j + 1])
         result.append(new_element)
     return result
 
@@ -148,3 +148,21 @@ def gather(list):
     while (result[-1] == 0):
         result = result[:-1]
     return result
+
+def decoding_with_potential_errors(y, V, A):
+    S = Syndrome(y, A, V)
+    if S == 0 :
+        return decodeGRS(y, V, A)
+    else : 
+        sigma, omega = Clef(S)
+        e = Erreur(sigma, omega, A, V)
+        yc = [i-j for i, j in zip (y, e)]
+        return decodeGRS(yc, V, A)
+    
+F2 = GF(2)
+R.<X> = F2['X']
+n = 0
+for p in R.polynomials(max_degree = 10) : 
+    if p.is_irreducible() : 
+        n += 1
+print(n)

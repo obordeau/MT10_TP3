@@ -51,13 +51,15 @@
 
     \section{Construction de corps finis}
         \setcounter{subsection}{2}
-        \subsection{Dénombrement des polynômes irréductibles et unitaires de $\mathbb{F}_p[X]$}
+        \subsection{Dénombrement des polynômes irréductibles et unitaires \newline 
+        de $\mathbb{F}_p[X]$}
             \subsubsection{Factorisation de $X^q-X$ dans $\mathbb{F}_p[X]$}
             \textbf{Question 1 :}
 
             L'objetcif est de vérifier la factorisation du pôlynome $X^q-X$ avec $q=2^6$.
 
-            Pour cela, nous allons déterminer l'ensemble des pôlynomes unitaires et irréductibales de degré $d$ tels que $d|n$, puis effectuer leur produit.
+            Pour cela, nous allons déterminer l'ensemble des pôlynomes unitaires et 
+            irréductibles de degré $d$ tels que $d|n$, puis effectuer leur produit.
 
             \lstinputlisting[language=Python, firstline=79, lastline=88]{utils.sage.py}
 
@@ -66,7 +68,7 @@
                 \rowcolor{gray}
                 \texttt{In}
                 & 
-                \texttt{prodduit == R(x ** (p ** n) - x)}
+                \texttt{produit == R(x ** (p ** n) - x)}
                 \\
                 \hline
                 \texttt{Out}
@@ -176,6 +178,8 @@
             \end{tabular}
             \bigbreak
 
+            \subsection{Calcul de polynômes unitaires irréductibles de $\mathbb{F}_p[X]$}
+
             \textbf{Question 4 :}
             \lstinputlisting[language=Python, firstline=107, lastline=124]{utils.sage.py}
 
@@ -195,7 +199,22 @@
             \end{tabularx}
             \bigbreak
 
-        \subsection{Calcul de polynômes unitaires irréductibles de $\mathbb{F}_p[X]$}
+            On trouve bien 226 polynômes irréductibles de $\mathbb{F}_2[X]$ de degré inférieur ou égal à 10 grâce à cette fonction.
+            Ce qui correspond bien à $2 + 1 + 2 + 3 + 6 + 9 + 18 + 30 + 56 + 99 = 226$.
+
+            Il existe aussi une fonction \texttt{Sage} que nous allons utiliser pour vérifier de nouveau la fonction précédente.
+
+            \lstinputlisting[language=Python, firstline=162, lastline=168]{utils.sage.py}
+
+            \begin{tabularx}{12cm}{|p{0.60cm}|X|}
+                \hline
+                \texttt{Out}
+                &
+                \texttt{226}
+                \\
+                \hline
+            \end{tabularx}
+            \bigbreak
     
     \section{Les codes de Reed et Solomon}
         \subsection{Définition des codes de Reed-Solomon \\ généralisés (GRS)}
@@ -295,7 +314,7 @@
         On cherche à simuler des erreurs de transmission avec la fonction \texttt{errTrans} qui prend en paramètre $y$ le mot codé, et $Nb\_err$ le nombre d'erreurs de transmissions.
         On tire aléatoirement chaque erreur dans $\mathbb{F}_q^*$. La fonction retourne $y'$ le mot codé avec $Nb\_err$ de transmission.
 
-        \lstinputlisting[language=Python, firstline=28, lastline=34]{utils.sage.py}
+        \lstinputlisting[language=Python, firstline=38, lastline=44]{utils.sage.py}
 
         \begin{tabularx}{12cm}{|p{0.60cm}|X|}
             \hline
@@ -371,7 +390,7 @@
 
         Si $S(X) = 0$, on a donc $y' \in GRS_{n,k}(\alpha,v)$ et on a alors de grandes chances pour que $y'$ ne contienne pas d'erreurs.
 
-        \lstinputlisting[language=Python, firstline=36, lastline=41]{utils.sage.py}
+        \lstinputlisting[language=Python, firstline=46, lastline=51]{utils.sage.py}
 
         \textbf{Question 10 :}\bigbreak
 
@@ -415,7 +434,7 @@
         Grâce à l'algorithme d'Euclide on peut trouver $\sigma$ et $\omega$, la fonction \texttt{Clef} 
         calcule à partir du polynôme syndrome $S(X)$, de $q$, $k$ et $n$, les polynômes $\sigma$ et $\omega$.
 
-        \lstinputlisting[language=Python, firstline=43, lastline=57]{utils.sage.py}
+        \lstinputlisting[language=Python, firstline=53, lastline=67]{utils.sage.py}
         
         Avec l'exemple développé jusqu'ici on vérifie que l'équation clef est satisfaite.
 
@@ -461,7 +480,7 @@
         en sachant que : 
         \[B = \{b \in [0,n-1] : \sigma(\alpha_b^{-1}) = 0 \}\]
 
-        \lstinputlisting[language=Python, firstline=59, lastline=67]{utils.sage.py}
+        \lstinputlisting[language=Python, firstline=69, lastline=77]{utils.sage.py}
 
         \begin{tabularx}{12cm}{|p{0.60cm}|X|}
             \hline
@@ -483,17 +502,30 @@
 
     \section{Conclusion : une chaîne de transmission cryptée robuste}
     L'objectif de cette section est de simuler un chaîne de transmission qui allie le l'algorithme RSA pour l'encryption et le code GRS pour l'intégrité des données.
+    Le message doit d'abord être numérisé sous forme d'une liste d'entiers grâce à la fonction \texttt{numerise}.
+    
     Dans un soucis de simplification, on utilisera une clé RSA de 8 bits pour obtenir une liste d'entiers compris entre 0 et 255. Cela facilitera l'utilisation d'un corps fini à $2^8$ éléments.
-    Les fonctions d'encryption et de décryption utilisée provienent du précédent TP.
+    Les fonctions d'encryption et de décryption RSA utilisées, ainsi que les fonctions de numérisation et d'alphabétisation proviennent du précédent TP.
     
     Pour obtenir des mots de k lettres, on utilisera la fonction \texttt{split} qui divise la chaine d'entiers en une liste de sous-listes contenant k éléments. 
-    Cette dernière liste pourra donc être ensuite codée grâce à la fonction \texttt{codeGRS}.
+    Chaque mot de cette dernière liste pourra donc être ensuite codée grâce à la fonction \texttt{codeGRS}.
+    La fonction \texttt{split}, incrémente chaque entier pour ne pas se retrouver avec des zéros.
 
-    \lstinputlisting[language=Python, firstline=132, lastline=150]{utils.sage.py}
+    \lstinputlisting[language=Python, firstline=132, lastline=141]{utils.sage.py}
+
+    La fonction \texttt{gather} réalise l'opération inverse de \texttt{split}.
+
+    \lstinputlisting[language=Python, firstline=143, lastline=150]{utils.sage.py}
+
+    Pour le décodage, la fonction decode\_with\_potential\_errors calcule le polynôme syndrome,
+    s'il est égal à zéro, on décode alors avec \texttt{decodeGRS}, sinon il cherche $\sigma$, $\omega$ et l'erreur
+    pour trouver le bon $y$ sans erreur, avec lequel on décodera.
+
+    \lstinputlisting[language=Python, firstline=152, lastline=160]{utils.sage.py}
 
         \subsection{Cas sans erreur}
 
-        Le message doit d'abord être numérisé sous forme de liste d'entiers. Puis cette dernière liste est encryptée grâce à la fonction \texttt{encodeRSA}. Cette liste est ensuite divisée en mots de $k$ lettres pour pouvoir être encodée.
+        On vérifie tout d'abord que la version sans erreur fonctionne sans encombre, avant de simuler des erreurs de transmission.
         \bigbreak
 
         \begin{tabularx}{12cm}{|p{0.60cm}|X|}
@@ -501,30 +533,36 @@
             \rowcolor{gray}
             \texttt{In}
             & 
-            \texttt{cryted\_message = encodeRSA(numerise("Voici le message à crypter !", 24), e , N)}
+            \texttt{crypted\_message = list(encodeRSA(numerise("Voici le message à crypter !", N), e , N))}
             \\
             \hline
             \rowcolor{gray}
             \texttt{In}
             &
-            \texttt{grs\_encoded = [codeGRS(word, v, a) for word in split(crypted\_message)]}
+            \texttt{grs\_encoded = [codeGRS(word, v, a) for word in split(crypted\_message, 3)]}
             \\
             \hline
             \rowcolor{gray}
             \texttt{In}
             &
-            \texttt{gathered\_message = gather(decodeGRS(word, v, a) for word in grs\_encoded])}
+            \texttt{grs\_decoded = [decoding\_with\_potential\_errors(word, v, a) for word in grs\_encoded]}
             \\
             \hline
             \rowcolor{gray}
             \texttt{In}
             &
-            \texttt{alphabetise\_safe(decode\_rsa(gathered\_message, d, N), 24)}
+            \texttt{gathered\_message = gather(grs\_decoded)}
+            \\
+            \hline
+            \rowcolor{gray}
+            \texttt{In}
+            &
+            \texttt{alphabetise(decode\_rsa(gathered\_message, d, N), N)}
             \\
             \hline
             \texttt{Out}
             &
-            \texttt{Voici le message à crypter !}
+            \texttt{'Voici le message à crypter !'}
             \\
             \hline
         \end{tabularx}
@@ -532,37 +570,51 @@
     
     \subsection{Cas avec erreur}
 
-        Le processus est le même, simule seulement l'apparition d'erreurs lors de la transmission du message.
-
+        Le processus est le même, on simule seulement l'apparition d'erreurs lors de la transmission du message, nos fonctions permettent de détecter jusqu'à 2 erreurs, 
+        on simule donc des erreurs aléatoires sur chaque mots.
+        \bigbreak
+    
         \begin{tabularx}{12cm}{|p{0.60cm}|X|}
             \hline
             \rowcolor{gray}
             \texttt{In}
             & 
-            \texttt{cryted\_message = encodeRSA(numerise("Voici le message à crypter !", 24), e , N)}
+            \texttt{cryted\_message = list(encodeRSA(numerise("Voici le message à crypter !", N), e , N))}
             \\
             \hline
             \rowcolor{gray}
             \texttt{In}
             &
-            \texttt{grs\_encoded = [codeGRS(word, v, a) for word in split(crypted\_message)]}
+            \texttt{grs\_encoded = [codeGRS(word, v, a) for word in split(crypted\_message, 3)]}
             \\
             \hline
             \rowcolor{gray}
             \texttt{In}
             &
-            \texttt{gathered\_message = gather(decodeGRS(word, v, a) for word in grs\_encoded])}
+            \texttt{grs\_error = [errTrans(word, randint(0,2)) for word in grs\_encoded]}
             \\
             \hline
             \rowcolor{gray}
             \texttt{In}
             &
-            \texttt{alphabetise\_safe(decode\_rsa(gathered\_message, d, N), 24)}
+            \texttt{grs\_decoded = [decoding\_with\_potential\_errors(word, v, a) for word in grs\_error]}
+            \\
+            \hline
+            \rowcolor{gray}
+            \texttt{In}
+            &
+            \texttt{gathered\_message = gather(grs\_decoded)}
+            \\
+            \hline
+            \rowcolor{gray}
+            \texttt{In}
+            &
+            \texttt{alphabetise(decode\_rsa(gathered\_message, d, N), N)}
             \\
             \hline
             \texttt{Out}
             &
-            \texttt{Voici le message à crypter !}
+            \texttt{'Voici le message à crypter !'}
             \\
             \hline
         \end{tabularx}
